@@ -58,6 +58,10 @@ sleep 8
 echo "5. A instalar Ansible e dependências..."
 pct exec "$CT_ID" -- bash -c "apt update && apt install -y ansible python3-proxmoxer python3-requests sshpass git curl"
 
+echo "5. A instalar Ansible, dependências e configurar locale..."
+pct exec "$CT_ID" -- bash -c "apt update && apt install -y ansible python3-proxmoxer python3-requests sshpass git curl locales && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+  locale-gen && sleep 5 && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8"
+
 echo "6. A configurar chaves SSH..."
 pct exec "$CT_ID" -- bash -c "mkdir -p /root/.ssh && ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -N '' -q"
 PUB_KEY=$(pct exec "$CT_ID" -- cat /root/.ssh/id_ed25519.pub)
