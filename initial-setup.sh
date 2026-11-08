@@ -67,9 +67,6 @@ chmod 700 /root/.ssh
 chmod 600 /root/.ssh/authorized_keys
 printf '%s\n' "$PUB_KEY" >> /root/.ssh/authorized_keys
 
-# echo "7. A criar estrutura de diretórios do projeto..."
-# pct exec "$CT_ID" -- bash -c "mkdir -p /root/homelab/{playbooks,inventories,files}"
-
 if [[ -z "${GITHUB_TOKEN:-}" ]]; then
     read -r -s -p "GitHub Token (repositório privado minipc): " GITHUB_TOKEN
     echo
@@ -80,7 +77,8 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
 fi
 
 echo "7. A clonar o repositório privado e preparar o Ansible..."
-pct exec "$CT_ID" -- bash -c "  git clone https://${GITHUB_TOKEN}@://github.com /root/git && ansible-galaxy collection install community.general "
+pct exec "$CT_ID" -- bash -c "  git clone https://${GITHUB_TOKEN}@://github.com /root/homelab && mkdir -p /root/homelab/{playbooks,inventories,files} && ansible-galaxy collection install community.general"
+
 # Limpa o token da memória do host Proxmox
 unset GITHUB_TOKEN
 
