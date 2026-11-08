@@ -80,7 +80,7 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
 fi
 
 echo "7. A clonar o repositório privado e preparar o Ansible..."
-pct exec "$CT_ID" -- bash -c "  git clone https://${GITHUB_TOKEN}@://github.com /root/homelab && ansible-galaxy collection install community.general "
+pct exec "$CT_ID" -- bash -c "  git clone https://${GITHUB_TOKEN}@://github.com /root/git && ansible-galaxy collection install community.general "
 # Limpa o token da memória do host Proxmox
 unset GITHUB_TOKEN
 
