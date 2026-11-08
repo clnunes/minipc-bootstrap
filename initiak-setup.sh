@@ -70,6 +70,22 @@ printf '%s\n' "$PUB_KEY" >> /root/.ssh/authorized_keys
 echo "7. A criar estrutura de diretórios do projeto..."
 pct exec "$CT_ID" -- bash -c "mkdir -p /root/homelab/{playbooks,inventories,files}"
 
+if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+    read -r -s -p "GitHub Token (repositório privado minipc): " GITHUB_TOKEN
+    echo
+fi
+if [[ -z "$GITHUB_TOKEN" ]]; then
+    echo "Erro: o token do GitHub não pode estar vazio." >&2
+    exit 1
+fi
+
+echo "8. A clonar o repositório privado e preparar o Ansible..."
+pct exec "$CT_ID" -- bash -c "
+  git clone https://${GITHUB_TOKEN}@://github.com /root/homelab && \
+  ansible-galaxy collection install community.general "
+# Limpa o token da memória do host Proxmox
+unset GITHUB_TOKEN
+
 echo "=========================================================="
 echo "CONCLUÍDO! O nó Ansible está pronto no IP: ${CT_IP%/*}"
 echo "Para entrar nele, usa: pct enter $CT_ID"
